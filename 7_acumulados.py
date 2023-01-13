@@ -112,3 +112,43 @@ class GlassBoxTest(TestCase):
         i, j = 0, 2
         summation = X.accumulate(i, j)
         self.assertEqual(summation, 10)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_accumulate_arg_not_int(self, mocked_input):
+        N = 3
+        mocked_input.side_effect = ['2 3 5']
+        X = Accumulated(N)
+        i, j = 0, 2.3
+        with self.assertRaises(ValueError):
+            X.accumulate(i, j)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_accumulate_arg_j_lower_than_i(self, mocked_input):
+        N = 3
+        mocked_input.side_effect = ['2 3 5']
+        X = Accumulated(N)
+        i, j = 2, 0
+        with self.assertRaises(ValueError):
+            X.accumulate(i, j)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_accumulate_arg_i_negative(self, mocked_input):
+        N = 3
+        mocked_input.side_effect = ['2 3 5']
+        X = Accumulated(N)
+        i, j = -1, 2
+        with self.assertRaises(IndexError):
+            X.accumulate(i, j)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_accumulate_arg_j_out_range(self, mocked_input):
+        N = 3
+        mocked_input.side_effect = ['2 3 5']
+        X = Accumulated(N)
+        i, j = 0, 3
+        with self.assertRaises(IndexError):
+            X.accumulate(i, j)
