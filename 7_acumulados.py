@@ -1,6 +1,3 @@
-from unittest import TestCase, mock
-
-
 class Accumulated:
     """create a array with length determined,
     it can to calculate accumuleted in definite range
@@ -52,14 +49,17 @@ def run() -> None:
             'entre ellos:')
         query = input().split()
         
-        if len(query) != 2:
-            print('consulta incorrecta')
-        
         try:
-            i = int(query[0])
-            j = int(query[1])
-            answer.append(X.accumulate(i, j))
-        except (ValueError, IndexError) as e:
+            assert len(query) == 2, 'consulta incorrecta'
+        
+            try:
+                i = int(query[0])
+                j = int(query[1])
+                answer.append(X.accumulate(i, j))
+            except (ValueError, IndexError) as e:
+                print(e)
+
+        except AssertionError as e:
             print(e)
 
     for i in answer:
@@ -70,11 +70,15 @@ if __name__ == '__main__':
     run()
 
 
+from unittest import TestCase, mock
+import io
+
+
 class GlassBoxTest(TestCase):
     # Regression  testing or mocks
 
     @mock.patch('7_acumulados.input', create=True)
-    def test_N_array_and_elements_on_range(self, mocked_input):
+    def test_Accumulated_object(self, mocked_input):
         N = 1
         mocked_input.side_effect = ['1']
         X = Accumulated(N)
@@ -152,3 +156,24 @@ class GlassBoxTest(TestCase):
         i, j = 0, 3
         with self.assertRaises(IndexError):
             X.accumulate(i, j)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_N_not_int(self, mocked_input):
+        mocked_input.side_effect = ['2.3']
+        with self.assertRaises(ValueError):
+            run()
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_K_not_int(self, mocked_input):
+        mocked_input.side_effect = ['1', '1', 'a']
+        with self.assertRaises(ValueError):
+            run()
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def test_query_sintax_wrong(self, mocked_input):
+        mocked_input.side_effect = ['1', '1', '1', '1']
+        with self.assertRaises(AssertionError):
+            run()
