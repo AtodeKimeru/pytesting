@@ -159,21 +159,76 @@ class GlassBoxTest(TestCase):
 
 
     @mock.patch('7_acumulados.input', create=True)
-    def test_N_not_int(self, mocked_input):
+    def test_N_is_not_int(self, mocked_input):
         mocked_input.side_effect = ['2.3']
         with self.assertRaises(ValueError):
             run()
 
 
     @mock.patch('7_acumulados.input', create=True)
-    def test_K_not_int(self, mocked_input):
+    def test_K_is_not_int(self, mocked_input):
         mocked_input.side_effect = ['1', '1', 'a']
         with self.assertRaises(ValueError):
             run()
 
 
     @mock.patch('7_acumulados.input', create=True)
-    def test_query_sintax_wrong(self, mocked_input):
+    def init_query_sintax_wrong(self, mocked_input):
         mocked_input.side_effect = ['1', '1', '1', '1']
-        with self.assertRaises(AssertionError):
-            run()
+        run()
+
+    @mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_query_sintax_wrong(self, mocked_stdout):
+        self.init_query_sintax_wrong()
+        stdout = mocked_stdout.getvalue().split('\n')
+        self.assertEqual(stdout[-2], 'consulta incorrecta') 
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def init_i_not_int(self, mocked_input):
+        mocked_input.side_effect = ['1', '1', '1', '1.1 1']
+        run()
+
+    @mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_i_in_query_is_not_int(self, mocked_stdout):
+        self.init_i_not_int()
+        stdout = mocked_stdout.getvalue().split('\n')
+        waited_output = "invalid literal for int() with base 10: '1.1'"
+        self.assertEqual(stdout[-2], waited_output)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def init_j_not_int(self, mocked_input):
+        mocked_input.side_effect = ['1', '1', '1', '1 1.1']
+        run()
+
+    @mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_j_in_query_is_not_int(self, mocked_stdout):
+        self.init_j_not_int()
+        stdout = mocked_stdout.getvalue().split('\n')
+        waited_output = "invalid literal for int() with base 10: '1.1'"
+        self.assertEqual(stdout[-2], waited_output)
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def init_run_1_query(self, mocked_input):
+        mocked_input.side_effect = ['1', '1', '1', '0 0']
+        run()
+
+    @mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_run_1_query(self, mocked_stdout):
+        self.init_run_1_query()
+        stdout = mocked_stdout.getvalue().split('\n')
+        self.assertEqual(stdout[-2], '1')
+
+
+    @mock.patch('7_acumulados.input', create=True)
+    def init_run_2_query(self, mocked_input):
+        mocked_input.side_effect = ['2', '2 2', '2', '0 0', '0 1']
+        run()
+
+    @mock.patch('sys.stdout', new_callable=io.StringIO)
+    def test_run_2_query(self, mocked_stdout):
+        self.init_run_2_query()
+        stdout = mocked_stdout.getvalue().split('\n')
+        self.assertEqual(stdout[-3] + stdout[-2], '24')
