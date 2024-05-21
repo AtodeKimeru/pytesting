@@ -1,5 +1,6 @@
 # pytesting
-Two scripts develop with different testing techniques; 7_acumulados use regression testing
+Two scripts develop with different testing techniques; 7_acumulados and 
+ 9_kelements with regression testing and test driven development respectively
 
 ### Usage
 In bash type:

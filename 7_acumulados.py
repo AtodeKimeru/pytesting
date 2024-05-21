@@ -70,8 +70,10 @@ if __name__ == '__main__':
     run()
 
 
+# TESTS
 from unittest import TestCase, mock
 import io
+
 
 
 class GlassBoxTest(TestCase):
